@@ -2,8 +2,8 @@
 Contributors: frankwalters
 Tags: twitter, post, posting, sharing, twitter share button, twitter button, share
 Requires at least: 3.0
-Tested up to: 3.0.1
-Stable tag: 1.0
+Tested up to: 3.1.1
+Stable tag: 1.1
 
 The simplest way to add a Twitter Share Button to posts on your WordPress blog.  One click setup and start getting Twitter tweets for posts on your blog.
 

@@ -3,7 +3,7 @@
 Plugin Name: Easy Twitter Share
 Plugin URI: http://frankwalters.com/
 Description: The simplest way to add a Twitter Share Button to posts on your WordPress blog.  One click setup and start getting Twitter tweets for posts on your blog.
-Version: 1.0
+Version: 1.1
 Author: frankwalters
 Author URI: http://frankwalters.com/
 */
@@ -20,9 +20,9 @@ function twsb_save_option( $name, $value ) {
 function twsb_add_twitter_button( $content ) {
     global $post;
     
-    $permalink = urlencode( get_permalink( $post->ID ) );
+    $permalink = get_permalink( $post->ID );
     
-    $tw_html = '<a href="http://twitter.com/share" class="twitter-share-button" data-url="' . $permalink . '" data-count="horizontal">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>';
+    $tw_html = '<a href="http://twitter.com/share" class="twitter-share-button" data-url="' . $permalink . '" data-text="' . addslashes($post->post_title) .'" data-count="horizontal">Tweet</a>';
     if ( get_option( 'twsb_add_before') )
         return $tw_html . $content;
     else
@@ -30,6 +30,12 @@ function twsb_add_twitter_button( $content ) {
 }
 
 add_filter( "the_content", "twsb_add_twitter_button" );
+
+function twsb_add_twitter_js() {
+        echo '<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>';
+}
+
+add_filter( "wp_footer", "twsb_add_twitter_js" );
 
 function twsb_option_settings_api_init() {
         add_settings_field( 'twsb_setting', 'Twitter Share Button', 'twsb_setting_callback_function', 'reading', 'default' );
@@ -81,6 +87,12 @@ function twsb_register_site() {
 }
 
 function twsb_rest_handler() {
+        if ( !get_option( 'twsb_ignore_message') && get_option( 'twsb_notice' ) ) {
+                wp_enqueue_script( 'jquery' );
+                wp_enqueue_script( 'thickbox', null, array('jquery') );
+                wp_enqueue_style( 'thickbox.css', '/' . WPINC . '/js/thickbox/thickbox.css', null, '1.0' );
+        }
+        
         // Basic ping
         if ( isset( $_GET['twsb_ping'] ) || isset( $_POST['twsb_ping'] ) )
                 return twsb_ping_handler();
